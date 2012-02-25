@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Minefield</title>
+	<style type='text/css'>
+		#app canvas { border: 1px solid black; }
+	</style>
+</head>
+<body>
+	<div id="app"></div>
+</body>
+<script src='libs/melonJS-0.9.3-min.js'></script>
+<script src='js/PlayScreen.js'></script>
+<script>
+var g_width = 640;
+var g_height = 480;
+
+var g_resources = [];
+
+
+var app = {
+	onload: function() {
+		// id of div element, width of canvas, height of canvas, double buffer?, scaling
+		if (!me.video.init('app', g_width, g_height, true, 1.0)){
+			alert('HTML5 canvas not supported in your browser');
+			return;
+		}
+
+		// register the function to call after loading has finished, and also register the list of resources to preload
+		me.loader.onload = this.loaded.bind(this);
+		me.loader.preload(g_resources);
+
+		// switch to the loading state -- tell melonJS to load resources, and then call the loaded method
+		me.state.change(me.state.LOADING);
+	},
+
+	loaded: function() {
+		// configure the PLAY state
+		me.state.set(me.state.PLAY, new PlayScreen())
+
+		// set the effect to use to switch between states. This is a global setting.
+		// params: type of transition, RGB format, and duration in ms
+		me.state.transition("fade", "#000000", 150);
+
+		// transfer to the PLAY state
+		me.state.change(me.state.PLAY);
+	}
+};	
+
+
+// start the application as soon as the window is ready!
+window.onReady(function(){
+	app.onload();
+});
+</script>
+</html>
